@@ -1,9 +1,4 @@
 let sheet = null;
-//   'Rank': {
-//             'data': -1,
-//             'display': 7,
-//           },
-
 
 let colDict = {
   'Name': {
