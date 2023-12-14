@@ -1,15 +1,11 @@
 let sheet = null;
+//   'Rank': {
+//             'data': -1,
+//             'display': 7,
+//           },
 
-// 
+
 let colDict = {
-  'Prize':{
-            'data': -1,
-            'display': 6,
-          },
-  'Rank': {
-            'data': -1,
-            'display': 7,
-          },
   'Name': {
             'data': 2,
             'display': 8,
@@ -30,7 +26,6 @@ let colDict = {
 
 function onOpen() {
   sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  // Hide columns from Google Forms submit
   hideDataColumns();
 }
 
@@ -39,12 +34,12 @@ function onFormsubmit(e) {
   clearRankColumn();
   
   if (checkIfCellIsEmpty('F1')) {
-    createDisplayHeaders(colDict);
+    createDataDisplayHeaders(colDict);
   }
   
-  convertImageURLtoThumbnail();
+  convertImageURLtoThumbnail(colDict);
   copyDataToDisplay(colDict);
-  sortData();
+  sortData(colDict);
 
   createStaticRankingColumn();
 }
@@ -57,8 +52,9 @@ function hideDataColumns() {
   Logger.log('Data columns hidden.');
 }
 
+// Clear rank column to avoid miscalculating last valid row containing data
 function clearRankColumn() {
-  var targetColumnLetter = 'G';
+  let targetColumnLetter = 'G';
   sheet.getRange(targetColumnLetter + '2:' + targetColumnLetter).clear();
 
   Logger.log('Rank column cleared.');
@@ -71,17 +67,17 @@ function checkIfCellIsEmpty(cellReference) {
 }
 
 // Create display headers
-function createDisplayHeaders(myDictionary) {
- for (var key in myDictionary) {
-    if (myDictionary.hasOwnProperty(key)) {
-      setCellByRowAndColumn(key, 1, myDictionary[key]['display']);
+function createDataDisplayHeaders(colDict) {
+ for (let key in colDict) {
+    if (colDict.hasOwnProperty(key)) {
+      setCellByRowAndColumn(key, 1, colDict[key]['display']);
     }
   }
   Logger.log('Display headers created.');
 }
 
 //Reconstructs image link for Google Sheets to properly display thumbnail
-function convertImageURLtoThumbnail() {
+function convertImageURLtoThumbnail(colDict) {
   let imageDataCell = getCellOfLastDataEntry(colDict['Proof']['data']);
   let oldImageURL = imageDataCell.getValue();
   let imageID = extractImageID(oldImageURL);
@@ -95,30 +91,26 @@ function convertImageURLtoThumbnail() {
 }
 
 // Copy data columns to display columns
-function copyDataToDisplay(myDictionary) {
-   for (var key in myDictionary) {
-    if (myDictionary.hasOwnProperty(key)) {
-      let dataCellColNum = myDictionary[key]['data'];
-      if (dataCellColNum > -1){
-        let dataCellRef = getCellOfLastDataEntry(dataCellColNum);
-        let displayCellColNum =  myDictionary[key]['display'];
-        let rowIndex = dataCellRef.getRowIndex();
-        let displayCellRef = sheet.getRange(rowIndex, displayCellColNum);
-        dataCellRef.copyTo(displayCellRef);
-      }
+function copyDataToDisplay(colDict) {
+   for (let key in colDict) {
+    if (colDict.hasOwnProperty(key)) {
+      let dataCellColNum = colDict[key]['data'];
+      let dataCellRef = getCellOfLastDataEntry(dataCellColNum);
+      let displayCellColNum =  colDict[key]['display'];
+      let rowIndex = dataCellRef.getRowIndex();
+      let displayCellRef = sheet.getRange(rowIndex, displayCellColNum);
+      dataCellRef.copyTo(displayCellRef);
     }
   }
   Logger.log('Data copied to display data columns.');
 }
 
 // Sort sheet data on score (descending)
-function sortData() {
-  var columnToSort = 3;
+function sortData(colDict) {
+  let columnToSort = colDict['Score']['data'];
 
-  // Get the range of the data in the sheet
-  var range = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn());
-
-  // Sort the data based on the specified column
+  // Get all data to sort
+  let range = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn());
   range.sort({ column: columnToSort, ascending: false });
 
   Logger.log('Data sorted.');
@@ -126,24 +118,20 @@ function sortData() {
 
 // Create the ranking column
 function createStaticRankingColumn() {
-  // Replace 'A' with the column letter where you want to insert the static ranking column
-  var targetColumnLetter = 'G';
 
-  // Number of rows to rank (change this based on your requirements)
-  var numRowsToRank = 5;
+  let targetColumnLetter = 'G';
+  let numRowsToRank = 5;
 
-  // Set the ranking values in the target column for the first numRowsToRank rows
-  for (var i = 2; i <= numRowsToRank + 1; i++) {
+  for (let i = 2; i <= numRowsToRank + 1; i++) {
     sheet.getRange(targetColumnLetter + i).setValue(i - 1);
   }
-
   Logger.log('Static ranking column inserted successfully.');
 }
 
 // Sets a cell at the given row and column to the given value
 function setCellByRowAndColumn(value, rowNum, columnNum) {
   // Get the range of the specific cell using row and column numbers
-  var cellRange = sheet.getRange(rowNum,columnNum);
+  let cellRange = sheet.getRange(rowNum,columnNum);
   cellRange.setValue(value);
 }
 
@@ -156,7 +144,7 @@ function getCellOfLastDataEntry(columnNum) {
 
 // Extract image id from url
 function extractImageID(url) {
-  var regexPattern = /.*=(.*)/;
+  let regexPattern = /.*=(.*)/;
   let matches = url.match(regexPattern);
   return matches[1];
 }
@@ -164,9 +152,9 @@ function extractImageID(url) {
 // Set Google Drive image as viewable with link so Sheets can display thumbnail
 function setFileViewableWithLink(fileId) {
 
-  var imageFile = DriveApp.getFileById(fileId);
+  let imageFile = DriveApp.getFileById(fileId);
   imageFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-  var sharingSettings = imageFile.getSharingAccess();
+  let sharingSettings = imageFile.getSharingAccess();
   Logger.log('Image sharing settings set to: ' + sharingSettings);
 }
