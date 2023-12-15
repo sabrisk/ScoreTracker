@@ -36,7 +36,7 @@ function onFormsubmit(e) {
   copyDataToDisplay(colDict);
   sortData(colDict);
 
-  createStaticRankingColumn();
+  createStaticRankingColumn("G");
 }
 
 // Hide the data columns created from Google Forms submit
@@ -50,7 +50,7 @@ function hideDataColumns() {
 // Clear rank column prior to copying data to avoid miscalculating last valid row containing data
 function clearRankColumn() {
   let targetColumnLetter = 'G';
-  sheet.getRange(targetColumnLetter + '2:' + targetColumnLetter).clear();
+  sheet.getRange(targetColumnLetter + '1:' + targetColumnLetter).clear();
 
   Logger.log('Rank column cleared.');
 }
@@ -112,9 +112,10 @@ function sortData(colDict) {
 }
 
 // Create the ranking column
-function createStaticRankingColumn() {
+function createStaticRankingColumn(targetColumnLetter) {
 
-  let targetColumnLetter = 'G';
+  sheet.getRange(targetColumnLetter + 1).setValue("Rank");
+
   let numRowsToRank = 5;
 
   for (let i = 2; i <= numRowsToRank + 1; i++) {
