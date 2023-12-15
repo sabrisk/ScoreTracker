@@ -47,7 +47,7 @@ function hideDataColumns() {
   Logger.log('Data columns hidden.');
 }
 
-// Clear rank column to avoid miscalculating last valid row containing data
+// Clear rank column prior to copying data to avoid miscalculating last valid row containing data
 function clearRankColumn() {
   let targetColumnLetter = 'G';
   sheet.getRange(targetColumnLetter + '2:' + targetColumnLetter).clear();
