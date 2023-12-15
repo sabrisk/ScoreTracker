@@ -41,8 +41,8 @@ function onFormsubmit(e) {
 
 // Hide the data columns created from Google Forms submit
 function hideDataColumns() {
-  // Hide the first 5 columns (A to E)
-  sheet.hideColumns(1, 5);
+  // Hide the first 5 columns (A to F)
+  sheet.hideColumns(1, 6);
 
   Logger.log('Data columns hidden.');
 }
