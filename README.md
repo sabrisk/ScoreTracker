@@ -57,14 +57,17 @@ A score tracking spreadsheet app using Google Sheets and Google Forms to record 
 12. Create another question using the plus sign on the right and change the answer type to "Short answer"
 13. Change the question to "Score"
 14. At the bottom right of this question, toggle it to be "Required"
-15.  Create another question and change the answer type to "File upload"
-16. Click "Continue" to allow images submitted to this form to be uploaded to your Google Drive
-17. Change the question to "Image proof"
-18. At the bottom right of this question, toggle it to be "Required"
-19. Click the Responses tab at the top and then click "Link to Sheets"
-20. On the "Select destination for responses" popup, select "select existing spreadsheet"
-21. Click "Select"
-22. Click the ScoreTracker spreadsheet and click "Select" at the bottom.
+15. To the right of the "Required" toggle, click the 3 dots and select response validation
+16. Click each dropdown and modify the validation so that it requires a "Number", "Greater than", "0"
+17. For the "Custom error Text", write "Please select a number greater than 0"
+18. Create another question and change the answer type to "File upload"
+19. Click "Continue" to allow images submitted to this form to be uploaded to your Google Drive
+20. Change the question to "Image proof"
+21. At the bottom right of this question, toggle it to be "Required"
+22. Click the Responses tab at the top and then click "Link to Sheets"
+23. On the "Select destination for responses" popup, select "select existing spreadsheet"
+24. Click "Select"
+25. Click the ScoreTracker spreadsheet and click "Select" at the bottom.
 
 ## Usage
 
