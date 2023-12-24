@@ -19,6 +19,36 @@ let colDict = {
           }
 }
 
+function init() {
+  createForm();
+}
+
+function createForm() {
+  let form = FormApp.create('Test Form');
+  Logger.log(form.getEditUrl())
+
+  addText(form, 'Name')
+  addText(form, 'Score', setScoreValidation)
+
+}
+
+function addText(form, title, validFunc = null) {
+  let textItem = form.addTextItem();
+  textItem.setTitle(title)
+  textItem.setRequired(true);
+
+  if(validFunc) validFunc(textItem)
+}
+
+function setScoreValidation(textItem) {
+  let numberValidation = FormApp.createTextValidation()
+    .setHelpText('Please enter a whole number greater than 0')
+    .requireWholeNumber()
+    .requireNumberGreaterThan(0)
+    .build();
+     textItem.setValidation(numberValidation);
+}
+
 function onOpen() {
   sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   hideDataColumns();
