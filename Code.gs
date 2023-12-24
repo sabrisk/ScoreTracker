@@ -30,6 +30,7 @@ function createForm() {
   addText(form, 'Name')
   addText(form, 'Score', setScoreValidation)
 
+  form.setDescription('VIEW HIGHSCORES HERE');
 }
 
 function addText(form, title, validFunc = null) {
