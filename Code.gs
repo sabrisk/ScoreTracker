@@ -20,17 +20,46 @@ let colDict = {
 }
 
 function init() {
+  setupSpreadsheet();
+  createFormSubmitTrigger();
   createForm();
 }
 
-function createForm() {
-  let form = FormApp.create('Test Form');
-  Logger.log(form.getEditUrl())
+function setupSpreadsheet() {
+  let spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  spreadsheet.rename('ScoreTracker');
 
+  let sharingAccess = DriveApp.Access.ANYONE_WITH_LINK;
+  let sharingPermission = DriveApp.Permission.VIEW;
+  DriveApp.getFileById(spreadsheet.getId()).setSharing(sharingAccess, sharingPermission);
+}
+
+function createFormSubmitTrigger() {
+  let spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  let functionName = 'onFormSubmit';
+
+  let triggers = ScriptApp.getProjectTriggers();
+  let triggerExists = false;
+
+  for (let i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() == functionName) {
+      triggerExists = true;
+      break;
+    }
+  }
+
+  if (!triggerExists) {
+    ScriptApp.newTrigger(functionName)
+      .forSpreadsheet(spreadsheet)
+      .onFormSubmit()
+      .create();
+  }
+}
+
+function createForm() {
+  let form = FormApp.create('ScoreTracker');
   addText(form, 'Name')
   addText(form, 'Score', setScoreValidation)
-
-  form.setDescription('VIEW HIGHSCORES HERE');
 }
 
 function addText(form, title, validFunc = null) {
@@ -47,7 +76,7 @@ function setScoreValidation(textItem) {
     .requireWholeNumber()
     .requireNumberGreaterThan(0)
     .build();
-     textItem.setValidation(numberValidation);
+    textItem.setValidation(numberValidation);
 }
 
 function onOpen() {
@@ -55,7 +84,7 @@ function onOpen() {
   hideDataColumns();
 }
 
-function onFormsubmit(e) {
+function onFormSubmit(e) {
   sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   clearRankColumn();
   
